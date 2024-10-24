@@ -4,7 +4,7 @@ from .models import Product
 
 def home(request):
     products = Product.objects.all()
-    context = {'products': products}
+    context = {"products": products}
     return render(request, "home.html", context)
 
 def contacts(request):
@@ -17,5 +17,5 @@ def contacts(request):
 
 def product_details(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    context = {'product': product}
+    context = {"product": product}
     return render(request, "product_details.html", context)
