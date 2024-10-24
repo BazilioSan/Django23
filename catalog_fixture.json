@@ -1,0 +1,184 @@
+[
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "title": "Болт",
+        "description": "Болт стальной",
+        "image": "",
+        "category": 1,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "title": "Шуруп",
+        "description": "Шуруп черный",
+        "image": "",
+        "category": 1,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "title": "Шуруп",
+        "description": "Шуруп черный",
+        "image": "",
+        "category": 1,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "title": "Шуруп",
+        "description": "Шуруп черный",
+        "image": "",
+        "category": 1,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+        "title": "Болт",
+        "description": "Болт стальной",
+        "image": "",
+        "category": 1,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "title": "Шуруп",
+        "description": "Шуруп черный",
+        "image": "",
+        "category": 1,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+        "title": "Винт",
+        "description": "Винт пластиковый",
+        "image": "",
+        "category": 1,
+        "price": 5.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 8,
+    "fields": {
+        "title": "Молоток",
+        "description": "Молоток столярный",
+        "image": "",
+        "category": 2,
+        "price": 500.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+        "title": "Гвоздодер",
+        "description": "Гвоздодер стальной",
+        "image": "",
+        "category": 2,
+        "price": 400.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 11,
+    "fields": {
+        "title": "Болт",
+        "description": "Болт стальной",
+        "image": "",
+        "category": 3,
+        "price": 10.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 12,
+    "fields": {
+        "title": "Шуруп",
+        "description": "Шуруп черный",
+        "image": "",
+        "category": 3,
+        "price": 20.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 13,
+    "fields": {
+        "title": "Винт",
+        "description": "Винт пластиковый",
+        "image": "",
+        "category": 3,
+        "price": 5.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 14,
+    "fields": {
+        "title": "Молоток",
+        "description": "Молоток столярный",
+        "image": "",
+        "category": 4,
+        "price": 500.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 15,
+    "fields": {
+        "title": "Гвоздодер",
+        "description": "Гвоздодер стальной",
+        "image": "",
+        "category": 4,
+        "price": 400.0,
+        "created_at": "2024-10-24",
+        "updated_at": "2024-10-24"
+    }
+}
+]
