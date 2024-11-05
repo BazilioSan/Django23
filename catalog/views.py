@@ -5,7 +5,7 @@ from .models import Product
 def home(request):
     products = Product.objects.all()
     context = {"products": products}
-    return render(request, "home.html", context)
+    return render(request, "product_list.html", context)
 
 def contacts(request):
     if request.method == "POST":
