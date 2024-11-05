@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse_lazy
 from django.http import HttpResponse
 from .models import Product
 
-def home(request):
-    products = Product.objects.all()
-    context = {"products": products}
-    return render(request, "product_list.html", context)
+class ProductListView(ListView):
+    model = Product
 
 def contacts(request):
     if request.method == "POST":
@@ -15,7 +15,10 @@ def contacts(request):
         return HttpResponse(f"Спасибо, {name}, за Ваше сообщение! Наши специалисты свяжутся с Вами по указанному номеру телефона!")
     return render(request, "contacts.html")
 
-def product_details(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {"product": product}
-    return render(request, "product_details.html", context)
+class ProductDetailView(DetailView):
+    model = Product
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ("title", "description", "price", "image", "category")
+    success_url = reverse_lazy('catalog:product_list')
