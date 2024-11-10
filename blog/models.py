@@ -20,8 +20,10 @@ class Post(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
     published = models.BooleanField(default=False, verbose_name="Признак публикации")
     view_counter = models.PositiveIntegerField(default=0, verbose_name="Количество просмотров")
+
     def __str__(self):
         return f"{self.title}"
+
     class Meta:
         verbose_name = "пост"
         verbose_name_plural = "посты"
