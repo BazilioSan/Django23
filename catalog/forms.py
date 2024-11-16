@@ -12,14 +12,20 @@ class ProductForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
-        self.fields['title'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Введите описание продукта'})
-        self.fields['description'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Введите описание продукта'})
-        self.fields['image'].widget.attrs.update({'class': 'form-control-file', 'placeholder': 'Загрузите изображение'})
-        self.fields['price'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Введите цену продукта'})
-        self.fields['category'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Выберите категорию продукта'})
+        self.fields["title"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Введите название продукта"}
+        )
+        self.fields["description"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Введите описание продукта"}
+        )
+        self.fields["image"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Укажите изображение продукта"}
+        )
+        self.fields["category"].widget.attrs.update({"class": "form-control"})
+        self.fields["price"].widget.attrs.update({"class": "form-control"})
 
         def clean_price(self):
-            price = self.cleaned_data['price']
+            price = self.cleaned_data["price"]
             if price < 0:
                 raise ValidationError('Цена не может быть отрицательной')
             return price

@@ -24,3 +24,15 @@ class PostForm(forms.ModelForm):
                 "Пост с таким название уже существует! Выберите новое название."
             )
         return title
+
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+        if image and not image.name.endswith((".jpg", ".png", ".jpeg")):
+            raise ValidationError("Изображение должно быть в формате JPEG, PNG или JPG.")
+        return image
+
+    def save(self, commit=True):
+        post = super().save(commit=False)
+        post.save()
+        return post
+
