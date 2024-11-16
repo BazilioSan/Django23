@@ -30,9 +30,15 @@ class ProductForm(forms.ModelForm):
                 raise ValidationError('Цена не может быть отрицательной')
             return price
 
-        def clean(self):
-            clean_data = super().clean()
-            title = clean_data.get('title')
-            description = clean_data.get('description')
-            if any(word in title.lower() for word in STOP_WORDS) or any(word in description.lower() for word in STOP_WORDS):
-                raise ValidationError('Предложение содержит запрещенные слова')
+        def clean_title(self):
+            title = self.cleaned_data.get("title")
+            if any(word in title.lower() for word in STOP_WORDS):
+                raise ValidationError("В названии продукта содержатся запрещенные слова!")
+            elif Product.objects.filter(title=title).exists():
+                raise ValidationError("Продукт с таким названием уже существует!")
+            return title
+
+        def clean_description(self):
+            description = self.cleaned_data.get("description")
+            if any(word in description.lower() for word in STOP_WORDS):
+                raise ValidationError("В описании продукта содержатся запрещенные слова!")
