@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 
 STOP_WORDS = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product

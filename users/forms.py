@@ -1,6 +1,8 @@
 from django import forms
 from .models import User
 from django.contrib.auth.forms import UserCreationForm
+
+
 class UserRegisterForm(UserCreationForm):
     phone_number = forms.CharField(
         max_length=15, required=False, help_text="Введите номер телефона"
@@ -8,6 +10,7 @@ class UserRegisterForm(UserCreationForm):
     country = forms.CharField(
         max_length=50, required=False, help_text="Укажите Вашу страну проживания"
     )
+
     class Meta:
         model = User
         fields = [
@@ -18,6 +21,7 @@ class UserRegisterForm(UserCreationForm):
             "password1",
             "password2",
         ]
+
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
         self.fields["email"].widget.attrs.update(
@@ -38,6 +42,7 @@ class UserRegisterForm(UserCreationForm):
         self.fields["password2"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Введите пароль"}
         )
+
     def clean_phone_number(self):
         phone_number = self.cleaned_data.get("phone_number")
         if phone_number and not phone_number.isdigit():
