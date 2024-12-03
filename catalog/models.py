@@ -65,10 +65,6 @@ class Product(models.Model):
         default=0, verbose_name="Количество просмотров"
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.price = None
-
     def __str__(self):
         return f"{self.title} {self.price}"
 

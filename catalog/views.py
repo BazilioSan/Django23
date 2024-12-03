@@ -4,6 +4,8 @@ from django.views.generic import ListView, DetailView, TemplateView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
+from django.core.cache import cache
+from django.http import HttpResponse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -58,17 +60,19 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
-    model = Product
-    template_name = "catalog/product_confirm_delete.html"
-    success_url = reverse_lazy('catalog:product_list')
+    def post(self, pk):
+        # def post(self, request, pk):
 
-    def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
         if (
                 not self.request.user.has_perm("delete_product")
                 or self.request.user != product.owner
         ):
             return HttpResponseForbidden("У вас нет прав на это действие.")
+
+    model = Product
+    template_name = "catalog/product_confirm_delete.html"
+    success_url = reverse_lazy('catalog:product_list')
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
@@ -91,3 +95,4 @@ class UnpublishProductView(LoginRequiredMixin, View):
         product.publish_status = False
         product.save()
         return redirect("catalog:product_list")
+
