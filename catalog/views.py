@@ -4,6 +4,8 @@ from django.views.generic import ListView, DetailView, TemplateView, View
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
+from django.core.exceptions import PermissionDenied
+
 from django.core.cache import cache
 from django.http import HttpResponse
 
@@ -68,7 +70,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
                 not self.request.user.has_perm("delete_product")
                 or self.request.user != product.owner
         ):
-            return HttpResponseForbidden("У вас нет прав на это действие.")
+            return PermissionDenied("У вас нет прав на это действие.")
 
     model = Product
     template_name = "catalog/product_confirm_delete.html"
@@ -83,9 +85,24 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('catalog:product_list')
     login_url = reverse_lazy("users:login")
 
+    def get_queryset(self):
+        # Возвращает только те объекты, на которые у пользователя есть права
+        qs = super().get_queryset()
+        return qs.filter(owner=self.request.user)
+
+    def get_object(self, queryset=None):
+        # Получаем объект, используя фильтрацию по владельцу
+        self.object = super().get_object(queryset)
+        return self.object
+
+    # def get_object(self, queryset=None):
+    #     self.object = super().get_object(queryset)
+    #     if self.object.owner != self.request.user:
+    #         return PermissionDenied("Вы не являетесь владельцем продукта!")
+    #     return self.object
+
     def get_success_url(self):
         return reverse_lazy('catalog:product_detail', kwargs={'pk': self.object.pk})
-
 
 class UnpublishProductView(LoginRequiredMixin, View):
     def post(self, request, pk):
