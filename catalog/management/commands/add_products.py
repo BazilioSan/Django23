@@ -6,6 +6,7 @@ from catalog.models import Category, Product
 
 class Command(BaseCommand):
     help = "Загружает данные в БД из фикстур, предварительно очистив БД."
+
     def handle(self, *args, **options):
         # Очистка БД
         Product.objects.all().delete()
