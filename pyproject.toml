@@ -24,6 +24,7 @@ iniconfig = "^2.0.0"
 django = "^5.1.2"
 ipython = "^8.28.0"
 pillow = "^11.0.0"
+redis = "^5.2.0"
 
 
 [build-system]
