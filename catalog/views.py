@@ -1,13 +1,145 @@
-from django.shortcuts import render
+
+from django.views.generic.edit import UpdateView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, TemplateView, View
+from django.urls import reverse_lazy
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
+from django.core.exceptions import PermissionDenied
+
+from django.core.cache import cache
 from django.http import HttpResponse
 
-def home(request):
-    return render(request, "home.html")
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-def contacts(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        phone = request.POST.get("phone")
-        message = request.POST.get("message")
-        return HttpResponse(f"Спасибо, {name}, за Ваше сообщение! Наши специалисты свяжутся с Вами по указанному номеру телефона!")
-    return render(request, "contacts.html")
+from .models import Product, Category
+from .service import category_products, get_product_list
+from .forms import ProductForm
+
+
+class CategoryListView(ListView):
+    """Контроллер отображения списка категорий продуктов."""
+    model = Category
+    template_name = "catalog/category_list.html"
+
+
+class ProductListView(ListView):
+
+    model = Product
+    template_name = 'catalog/product_list.html'
+
+    def get_queryset(self):
+        return get_product_list()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["published_products"] = Product.objects.filter(publish_status=True)
+        return context
+
+
+class ContactsView(TemplateView):
+
+    template_name = "catalog/contacts.html"
+
+
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    model = Product
+    login_url = reverse_lazy("users:login")
+
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.object = None
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.view_counter += 1
+        self.object.save()
+        return self.object
+
+
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    model = Product
+    # fields = ('title', 'description', 'price', 'image', 'category')
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:product_list')
+    login_url = reverse_lazy("users:login")
+
+    def form_valid(self, form):
+        product = form.save()
+        user = self.request.user
+        product.owner = user
+        product.save()
+        return super().form_valid(form)
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+
+    def post(self, pk):
+        # def post(self, request, pk):
+
+        product = get_object_or_404(Product, pk=pk)
+        if (
+                not self.request.user.has_perm("delete_product")
+                or self.request.user != product.owner
+        ):
+            return PermissionDenied("У вас нет прав на это действие.")
+
+    model = Product
+    template_name = "catalog/product_confirm_delete.html"
+    success_url = reverse_lazy('catalog:product_list')
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    # fields = ("title", "description", "price", "image", "category")
+    template_name = "catalog/product_form.html"
+    success_url = reverse_lazy('catalog:product_list')
+    login_url = reverse_lazy("users:login")
+
+    def get_queryset(self):
+        # Возвращает только те объекты, на которые у пользователя есть права
+        qs = super().get_queryset()
+        return qs.filter(owner=self.request.user)
+
+    def get_object(self, queryset=None):
+        # Получаем объект, используя фильтрацию по владельцу
+        self.object = super().get_object(queryset)
+        return self.object
+
+    # def get_object(self, queryset=None):
+    #     self.object = super().get_object(queryset)
+    #     if self.object.owner != self.request.user:
+    #         return PermissionDenied("Вы не являетесь владельцем продукта!")
+    #     return self.object
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:product_detail', kwargs={'pk': self.object.pk})
+
+
+class UnpublishProductView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if not request.user.has_perm("can_unpublish_product"):
+            return HttpResponseForbidden("У вас нет прав на это действие.")
+        product.publish_status = False
+        product.save()
+        return redirect("catalog:product_list")
+
+
+class CategoryProductView(LoginRequiredMixin, ListView):
+    """Контроллер отображения всех продуктов в отдельной категории."""
+    template_name = "catalog/category_product.html"
+    context_object_name = "products"
+    login_url = reverse_lazy("users:login")
+
+    def get_queryset(self):
+        print(self.kwargs)
+        pk = self.kwargs.get("pk")
+        print(pk)
+        return category_products(pk)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["products"] = self.get_queryset()
+        return context
