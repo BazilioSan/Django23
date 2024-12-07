@@ -11,12 +11,24 @@ from django.http import HttpResponse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Product
+from .models import Product, Category
+from .service import category_products, get_product_list
 from .forms import ProductForm
 
 
+class CategoryListView(ListView):
+    """Контроллер отображения списка категорий продуктов."""
+    model = Category
+    template_name = "catalog/category_list.html"
+
+
 class ProductListView(ListView):
+
     model = Product
+    template_name = 'catalog/product_list.html'
+
+    def get_queryset(self):
+        return get_product_list()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -104,6 +116,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('catalog:product_detail', kwargs={'pk': self.object.pk})
 
+
 class UnpublishProductView(LoginRequiredMixin, View):
     def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -113,3 +126,20 @@ class UnpublishProductView(LoginRequiredMixin, View):
         product.save()
         return redirect("catalog:product_list")
 
+
+class CategoryProductView(LoginRequiredMixin, ListView):
+    """Контроллер отображения всех продуктов в отдельной категории."""
+    template_name = "catalog/category_product.html"
+    context_object_name = "products"
+    login_url = reverse_lazy("users:login")
+
+    def get_queryset(self):
+        print(self.kwargs)
+        pk = self.kwargs.get("pk")
+        print(pk)
+        return category_products(pk)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["products"] = self.get_queryset()
+        return context
